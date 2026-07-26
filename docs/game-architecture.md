@@ -1,36 +1,38 @@
 # Game Architecture
 
-## Runtime Shape
+This document records project-specific technical decisions. Replace the starter
+baseline as real game systems are introduced.
 
-The scene is intentionally generated at runtime/editor time by `DetectiveRoomBootstrap`. This keeps the Unity scene small and makes the prototype easy for agents and humans to inspect.
+## Current Baseline
 
-## Main Systems
+- Unity `6000.5.4f1`
+- One root Unity project
+- Scene: `Assets/Scenes/StarterScene.unity`
+- Runtime assembly: `Starter.Runtime`
+- Test assemblies: `Starter.EditModeTests` and `Starter.PlayModeTests`
+- Bootstrap behavior: create `__StarterReady` during Play Mode
 
-- `DetectiveRoomBootstrap` creates the camera, lights, room shell, props, interactables, player, UI, and objective wiring.
-- `PlayerClickMover` handles floor-click navigation using camera rays and a floor plane.
-- `InteractionController` raycasts from the cursor, highlights hovered interactables, and routes clicks.
-- `Interactable` stores clue/dialogue metadata and applies highlight property blocks.
-- `EvidenceLog` stores unique evidence IDs and refreshes the evidence UI.
-- `GameObjective` tracks required evidence completion.
-- `InspectionPanel` and `DialoguePanel` own modal uGUI panels.
+## Boundaries To Define
 
-## Data Flow
+- Scene ownership and loading
+- Input backend and action mapping
+- Player/controller architecture
+- UI framework and presentation boundaries
+- Persistence and save data
+- Audio, animation, physics, and rendering requirements
+- Asset naming, import, and addressability strategy
 
-1. `DetectiveRoomBootstrap` creates interactables and required evidence IDs.
-2. `InteractionController` calls `Interact()` after a click on an interactable.
-3. Clues show an inspection panel and call `EvidenceLog.AddEvidence()`.
-4. `EvidenceLog.EvidenceAdded` notifies `GameObjective`.
-5. `GameObjective` updates objective text and completion state.
+## Dependency Rules
 
-## Unity Constraints
+- Keep Editor-only APIs out of runtime assemblies.
+- Add packages only for a concrete feature requirement.
+- Prefer Unity serialization and Inspector-visible references for early slices.
+- Add shared abstractions only after repeated behavior demonstrates the need.
+- Record every cross-assembly dependency here.
 
-- Keep scene mutation inside Unity APIs, not manual YAML edits.
-- Keep generated object names stable; tests and agents use them.
-- Keep uGUI until the project explicitly migrates.
-- Keep package dependencies minimal.
+## Verification Strategy
 
-## Test Strategy
-
-- EditMode tests cover small pure-behavior seams: evidence uniqueness, objective progress, and prompt text.
-- EditMode scene smoke test opens `DetectiveRoom.unity` and confirms generated hierarchy is present.
-- PlayMode smoke test creates a bootstrap host and validates generated runtime objects and interactables.
+- EditMode tests cover deterministic logic and scene structure.
+- PlayMode tests cover runtime wiring and the smallest critical game loop.
+- Batchmode compile catches assembly and API errors.
+- Manual Play checks cover visuals, interaction, timing, and console behavior.

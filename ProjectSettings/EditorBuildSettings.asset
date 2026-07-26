@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/DetectiveRoom.unity
-    guid: 4f7e1b1d353f4b80a6f4f7b4d4241001
+    path: Assets/Scenes/StarterScene.unity
+    guid: 6dba27543256f4c9e8cdbe9207a12625
   m_configObjects: {}

@@ -39,7 +39,7 @@ node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" "$PROJ
 node --check "$PROJECT_ROOT/scripts/official-unity-mcp-smoke.mjs"
 require_contains ".mcp.example.json" '"command"[[:space:]]*:[[:space:]]*"uvx"'
 require_contains ".mcp.example.json" '"gladekit-mcp"'
-require_contains "GLADE.md" "__DetectiveRoomGenerated"
+require_contains "GLADE.md" "__StarterReady"
 require_contains "docs/unity-mcp-bakeoff.md" "Keep GladeKit MCP as the default bridge"
 require_contains "scripts/official-unity-mcp-smoke.mjs" 'startsWith\("Unity_AssetGeneration_"\)'
 

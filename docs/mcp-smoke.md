@@ -39,7 +39,7 @@ Ask the MCP-enabled agent to perform these in order:
 2. Confirm the active project path is the current repository root.
 3. Read `GLADE.md` context.
 4. Read the active scene hierarchy.
-5. Confirm `__DetectiveRoomGenerated`.
+5. Confirm `StarterBootstrap` and `__StarterReady` in the starter baseline.
 6. Read Unity console errors and warnings.
 7. Inspect the advertised tool list for a scene/game-view capture tool.
 8. Capture through the bridge when available; otherwise record a manual Editor screenshot for visual changes.
@@ -53,7 +53,7 @@ failure.
 ## Pass Criteria
 
 - The active project and scene are correct.
-- `__DetectiveRoomGenerated` is present.
+- The expected scene bootstrap and runtime readiness marker are present.
 - No new console errors are reported.
 - Visual tasks have either an automated capture or a documented manual Editor screenshot.
 - The agent does not mutate the scene during smoke testing.

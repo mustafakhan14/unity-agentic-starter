@@ -1,18 +1,32 @@
 # Local Models
 
-Use a Unity-tuned local model as a standard reviewer for Unity API risk. It is not the implementation authority; Unity compile, tests, MCP/editor state, and local package code remain the source of truth.
+Codex is the primary implementation agent. A local model is an optional,
+offline second-pass reviewer for Unity API risk; it is not the implementation
+authority. Unity compile, tests, MCP/editor state, and local package code remain
+the source of truth.
 
-## Default 80/20 Reviewer
+## 80/20 Recommendation
 
-Use `parashm/Qwen2.5-Coder-7B-Instruct-Unity-Q6_K-GGUF:Q6_K` through Ollama or another GGUF runtime.
+Do not download another model just to satisfy the workflow. First use a capable
+coder model that is already installed, for example:
 
-Recommended pull command:
+```bash
+UNITY_REVIEW_MODEL=qwen2.5-coder:14b scripts/unity-model-reviewer.sh --smoke
+```
+
+Run `scripts/unity-model-reviewer.sh --check` before a normal review. The script
+fails fast rather than implicitly downloading its configured model.
+
+Treat a Unity-tuned model as an evaluation candidate, not a required dependency.
+The current candidate is
+`parashm/Qwen2.5-Coder-7B-Instruct-Unity-Q6_K-GGUF:Q6_K`. Pull it explicitly only
+after deciding the local review benefit is worth the disk and download cost:
 
 ```bash
 ollama pull hf.co/parashm/Qwen2.5-Coder-7B-Instruct-Unity-Q6_K-GGUF:Q6_K
 ```
 
-Recommended smoke command:
+Then smoke-test it:
 
 ```bash
 scripts/unity-model-reviewer.sh --smoke
@@ -24,13 +38,9 @@ Recommended review command after Unity C# or package changes:
 git diff -- Assets/Scripts Assets/Tests Packages ProjectSettings | scripts/unity-model-reviewer.sh
 ```
 
-If the default model is still downloading, the script can be smoke-tested with another installed Ollama model:
-
-```bash
-UNITY_REVIEW_MODEL=qwen2.5-coder:14b scripts/unity-model-reviewer.sh --smoke
-```
-
-That fallback validates the workflow path only. It is not a substitute for the Unity-tuned reviewer.
+An installed general coder model is sufficient for advisory review unless a
+repo-specific evaluation shows that the Unity-tuned candidate catches more real
+issues without adding excessive false positives.
 
 ## Role In This Repo
 
@@ -52,7 +62,10 @@ Do not ask it to:
 
 ## Larger Candidate
 
-`wrayy/Qwenity3.6-27B-msv2` is a later evaluation candidate when local hardware and serving are proven. It should not block normal work because it is materially heavier and less convenient than the Q6_K GGUF reviewer path.
+`wrayy/Qwenity3.6-27B-msv2` is a later evaluation candidate when local hardware
+and serving are proven. It should not block normal work because it is materially
+heavier and less convenient than either an already-installed coder model or the
+Q6_K GGUF candidate.
 
 ## Repo-Specific Fine-Tuning Policy
 
@@ -64,7 +77,8 @@ Do not start a repo-specific fine-tune until this project has:
 - MCP screenshot or console evidence for scene tasks
 - a repeatable evaluator script that compares reviewer output against expected findings
 
-Until then, the high-leverage path is a Unity-tuned reviewer plus deterministic verification.
+Until then, the high-leverage path is Codex plus deterministic verification,
+with an installed local coder model used only as a cheap second opinion.
 
 ## Source Notes
 

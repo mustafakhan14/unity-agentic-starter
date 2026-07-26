@@ -17,7 +17,8 @@ Adapted from the MIT-licensed GladeKit MCP, CoplayDev Unity MCP, CoderGamester M
 
 - Editor is open and connected to the bridge.
 - The active Unity project is the current repository root.
-- Active scene is `Assets/Scenes/DetectiveRoom.unity`.
+- Active scene matches `GLADE.md`; the uncustomized baseline uses
+  `Assets/Scenes/StarterScene.unity`.
 - Unity is not compiling.
 - Domain reload is not pending.
 - Play Mode is stopped unless the task explicitly needs it.

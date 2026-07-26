@@ -1,16 +1,21 @@
 # Playtest Reporter Prompt
 
-Run or observe the prototype and report only actionable results.
+Run or observe the active story's target scene and report only actionable
+results.
 
-Check:
+Always check:
 
-- Scene opens: `Assets/Scenes/DetectiveRoom.unity`.
-- Generated root exists: `__DetectiveRoomGenerated`.
-- Floor click moves `Detective`.
-- Hover prompt appears for clues.
-- `Broken Glass`, `Ledger`, and `Locked Door` add evidence once.
-- `Radio Dispatcher` dialogue advances and closes.
-- Objective completes after all essential evidence is logged.
-- Unity console has no new errors.
+- the scene named by `GLADE.md` and the story opens;
+- the changed behavior can be completed from its entry state;
+- input, camera, UI, audio, and feedback match the story acceptance criteria;
+- success, failure, and retry states behave as specified;
+- Unity Console has no new errors.
 
-Return failures with reproduction steps and expected vs actual behavior.
+For the uncustomized starter baseline, check:
+
+- `Assets/Scenes/StarterScene.unity` opens;
+- `StarterBootstrap`, `Starter Object`, and `Main Camera` exist;
+- Play Mode creates `__StarterReady`;
+- the cube is visible in the Game view.
+
+Return failures with reproduction steps and expected versus actual behavior.

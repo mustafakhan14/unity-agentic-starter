@@ -1,9 +1,8 @@
 {
-    "name": "DetectiveRoom.PlayModeTests",
+    "name": "Starter.PlayModeTests",
     "references": [
         "UnityEngine.TestRunner",
-        "UnityEngine.UI",
-        "DetectiveRoom.Runtime"
+        "Starter.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

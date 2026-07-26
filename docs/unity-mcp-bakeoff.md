@@ -25,7 +25,7 @@ specific advantages.
 - Unity AI Assistant: `2.16.0-pre.1`
 - Unity relay: `unity-ai-relay v1.0.12-build.97`
 - Target: the Unity project at the repository root
-- Scene: `Assets/Scenes/DetectiveRoom.unity`
+- Current harness scene: `Assets/Scenes/StarterScene.unity`
 - Unity Cloud project: not linked
 - Unity Services: disabled
 - Paid AI/trial/generation: not enabled or invoked
@@ -56,9 +56,8 @@ The persistent macOS relay occupied about 63 MB under `~/.unity/relay`.
 The official smoke harness `scripts/official-unity-mcp-smoke.mjs`:
 
 - refuses every tool whose name starts with `Unity_AssetGeneration_`;
-- requires the exact target scene and `DetectiveRoomBootstrap`;
-- confirms the generated runtime root and
-  `Broken Glass` components `Transform,BoxCollider,Interactable`;
+- requires the exact target scene and `StarterBootstrap`;
+- confirms `__StarterReady` and the `Starter Object` renderer/collider;
 - reads console logs and records 20 latency/reliability samples;
 - creates an Undo-registered temporary object, performs Undo, and verifies the
   object is gone;
@@ -66,7 +65,9 @@ The official smoke harness `scripts/official-unity-mcp-smoke.mjs`:
 - saves camera and multi-angle captures under ignored `Logs/`;
 - requests a script-domain reload and requires post-reload tool execution.
 
-The final run passed all checks. Its ignored local report is
+The pre-template bakeoff run passed all checks. The generalized harness keeps
+the same safety checks with neutral starter assertions and should be rerun after
+the official package is deliberately installed. Reports remain ignored under
 `Logs/official-unity-mcp-smoke.json`.
 
 The equivalent live GladeKit checks passed:
@@ -74,9 +75,8 @@ The equivalent live GladeKit checks passed:
 - `scripts/mcp-smoke-check.sh --static`
 - `scripts/mcp-smoke-check.sh`
 - 267 tools returned by `/api/tools/list`
-- 74 scene objects returned by `get_scene_hierarchy`
-- `__DetectiveRoomGenerated` and the evidence objects present
-- console retrieval succeeded
+- scene hierarchy and expected bootstrap objects were returned
+- console retrieval succeeded after scene and domain transitions
 
 ## Account And Safety Boundary
 

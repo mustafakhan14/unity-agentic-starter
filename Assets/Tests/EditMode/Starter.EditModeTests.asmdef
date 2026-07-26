@@ -1,10 +1,9 @@
 {
-    "name": "DetectiveRoom.EditModeTests",
+    "name": "Starter.EditModeTests",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "UnityEngine.UI",
-        "DetectiveRoom.Runtime"
+        "Starter.Runtime"
     ],
     "includePlatforms": [
         "Editor"

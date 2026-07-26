@@ -247,11 +247,11 @@ internal class CommandScript : IRunCommand
     public void Execute(ExecutionResult result)
     {
         var scene = EditorSceneManager.OpenScene(
-            "Assets/Scenes/DetectiveRoom.unity",
+            "Assets/Scenes/StarterScene.unity",
             OpenSceneMode.Single);
         var roots = scene.GetRootGameObjects();
         var transforms = roots.SelectMany(root => root.GetComponentsInChildren<Transform>(true)).ToArray();
-        var bootstrap = transforms.FirstOrDefault(item => item.name == "DetectiveRoomBootstrap");
+        var bootstrap = transforms.FirstOrDefault(item => item.name == "StarterBootstrap");
         var components = bootstrap == null
             ? "missing"
             : string.Join(",", bootstrap.GetComponents<Component>().Select(component => component.GetType().Name));
@@ -265,8 +265,8 @@ internal class CommandScript : IRunCommand
   );
 
   if (
-    !executionText(hierarchy).includes("scene=Assets/Scenes/DetectiveRoom.unity") ||
-    !executionText(hierarchy).includes("DetectiveRoomBootstrap")
+    !executionText(hierarchy).includes("scene=Assets/Scenes/StarterScene.unity") ||
+    !executionText(hierarchy).includes("StarterBootstrap")
   ) {
     throw new Error(`Target scene inspection failed: ${executionText(hierarchy)}`);
   }
@@ -400,21 +400,21 @@ internal class CommandScript : IRunCommand
         var transforms = scene.GetRootGameObjects()
             .SelectMany(root => root.GetComponentsInChildren<Transform>(true))
             .ToArray();
-        var glass = transforms.FirstOrDefault(item => item.name == "Broken Glass");
-        var components = glass == null
+        var starterObject = transforms.FirstOrDefault(item => item.name == "Starter Object");
+        var components = starterObject == null
             ? "missing"
-            : string.Join(",", glass.GetComponents<Component>().Select(component => component.GetType().Name));
+            : string.Join(",", starterObject.GetComponents<Component>().Select(component => component.GetType().Name));
         result.Log(
             "scene=" + scene.path +
             "; transforms=" + transforms.Length +
-            "; generated=" + transforms.Any(item => item.name == "__DetectiveRoomGenerated") +
-            "; brokenGlassComponents=" + components);
+            "; ready=" + transforms.Any(item => item.name == "__StarterReady") +
+            "; starterObjectComponents=" + components);
     }
 }`,
-    "generated=True",
+    "ready=True",
   );
 
-  if (!executionText(runtimeHierarchy).includes("Interactable")) {
+  if (!executionText(runtimeHierarchy).includes("MeshRenderer")) {
     throw new Error(
       `Runtime component inspection failed: ${executionText(runtimeHierarchy)}`,
     );

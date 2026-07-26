@@ -5,7 +5,8 @@ description: Change Unity C# scripts safely in this repo. Use when editing MonoB
 
 # Unity C# Change
 
-Adapted from the MIT-licensed CoplayDev Unity-MCP operator guide and CoderGamester MCP Unity invariants.
+Adapted from the MIT-licensed CoplayDev Unity-MCP operator guide and
+CoderGamester MCP Unity invariants.
 
 ## Use When
 
@@ -20,23 +21,23 @@ Adapted from the MIT-licensed CoplayDev Unity-MCP operator guide and CoderGamest
 
 ## Preferred Flow
 
-1. Read the target script and dependent scripts.
+1. Read the target script, asmdef, and direct dependents.
 2. Keep changes small and compile-oriented.
-3. Do not attach or depend on new scripts until Unity compilation succeeds.
-4. Run JSON/shell checks if asmdefs or scripts changed.
+3. Do not attach or depend on new scripts until compilation succeeds.
+4. Validate changed JSON and shell scripts.
 5. Run `scripts/verify-unity.sh`.
 6. Check console output after compilation.
 
 ## Local Invariants
 
-- Runtime assembly is `DetectiveRoom.Runtime`.
-- uGUI requires the `UnityEngine.UI` asmdef reference.
+- The starter runtime assembly is `Starter.Runtime`; update architecture docs
+  if the customized game renames or splits it.
 - Test asmdefs use `UNITY_INCLUDE_TESTS` and NUnit.
-- Keep MonoBehaviours in the global namespace for now.
-- Do not add package dependencies without updating `Packages/packages-lock.json`.
+- Keep MonoBehaviours in the global namespace until architecture says otherwise.
+- Do not add package dependencies without resolving `Packages/packages-lock.json`.
 
 ## References
 
 - `AGENTS.md`
 - `docs/game-architecture.md`
-- `Assets/Scripts/DetectiveRoom.Runtime.asmdef`
+- `Assets/Scripts/Starter.Runtime.asmdef`

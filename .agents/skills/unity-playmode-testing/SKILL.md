@@ -1,40 +1,32 @@
 ---
 name: unity-playmode-testing
-description: Verify runtime behavior in the Unity detective prototype. Use when running EditMode or PlayMode tests, entering Play Mode, simulating the evidence loop, checking console logs, or capturing screenshot evidence. Do not use for static-only docs changes.
+description: Verify Unity runtime behavior with automated tests, Play Mode, console logs, and visual evidence. Do not use for static-only documentation tasks.
 ---
 
 # Unity PlayMode Testing
 
-Adapted from the MIT-licensed `akiojin/unity-cli` PlayMode testing skill and CoplayDev Unity-MCP verification flow.
+Adapted from the MIT-licensed `akiojin/unity-cli` PlayMode skill and CoplayDev
+Unity-MCP verification flow.
 
 ## Use When
 
-- Gameplay or UI behavior changed.
+- Runtime, input, UI, scene, or presentation behavior changed.
 - The user asks for Play Mode confidence.
 - Tests, screenshots, or console logs are required.
-
-## Do Not Use When
-
-- Only markdown or prompt files changed.
-- Unity licensing is not warmed up and the task only needs static review.
 
 ## Preferred Flow
 
 1. Run `scripts/verify-unity.sh`.
-2. If licensing fails, open Unity Hub or this project in the editor once and rerun.
-3. Run the manual Play check for behavior changes:
-   - floor click moves `Detective`
-   - clues inspect and add evidence once
-   - radio dialogue advances and closes
-   - objective completes after three required clues
-4. When the MCP bridge advertises a capture tool, capture a game or scene view screenshot; otherwise use a manual Editor screenshot for visual changes.
+2. If licensing fails, open Unity Hub or this project once and rerun.
+3. Open the current story's target scene and exercise its acceptance criteria.
+4. Capture a scene/game view for visual changes when automation supports it.
 5. Read console errors and warnings before reporting success.
 
-## Expected Automated Coverage
+## Starter Coverage
 
-- `CoreBehaviourTests` covers evidence uniqueness, objective completion, and prompt text.
-- `DetectiveRoomSceneTests` opens the scene and checks generated hierarchy.
-- `DetectiveRoomBootstrapPlayModeTests` builds the runtime room and checks interactables.
+- `StarterSceneTests` checks baseline scene objects and components.
+- `StarterBootstrapPlayModeTests` checks runtime creation of `__StarterReady`.
+- Replace or extend these tests as the customized game's core loop emerges.
 
 ## References
 

@@ -1,15 +1,5 @@
-project: unitylearning
-active_story: docs/stories/001-agentic-unity-baseline.md
-status: baseline-ready
-updated: 2026-07-19
-stories:
-  - id: 001
-    title: Agentic Unity Baseline
-    path: docs/stories/001-agentic-unity-baseline.md
-    status: done
-    verification:
-      unity: passed
-      static_agent_setup: passed
-      mcp_static: passed
-      mcp_live: passed
-      local_model_reviewer: pending-pull
+project: unity-agentic-starter
+active_story: null
+status: template-ready
+updated: 2026-07-25
+stories: []

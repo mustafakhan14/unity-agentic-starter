@@ -4,7 +4,7 @@ GladeKit MCP is the default bridge for this repo because it supports Unity-aware
 
 ## Install `uv`
 
-`uvx` is required for the MCP server command. This machine uses Homebrew:
+`uvx` is required for the MCP server command. On macOS, Homebrew is one option:
 
 ```bash
 brew install uv
@@ -67,7 +67,7 @@ Do not commit API keys or personal MCP client config. If semantic script search 
 Ask the agent to:
 
 - Read the active scene hierarchy.
-- Confirm `__DetectiveRoomGenerated`.
+- Confirm `StarterBootstrap` and `__StarterReady` in the starter baseline.
 - Read Unity console logs.
 - Capture a scene or game view screenshot when the advertised bridge tools support it; otherwise use a manual Editor screenshot for visual changes.
 

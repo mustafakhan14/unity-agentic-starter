@@ -7,7 +7,8 @@ Adapted from audited MIT-licensed Unity MCP and unity-cli prior art.
 ## Before Mutating
 
 - Confirm the active Unity project is the current repository root.
-- Confirm the active scene is `Assets/Scenes/DetectiveRoom.unity` when scene work is intended.
+- Confirm the active scene matches `GLADE.md` and the current story. Until the
+  template is customized, use `Assets/Scenes/StarterScene.unity`.
 - Read editor state and wait if Unity is compiling or a domain reload is pending.
 - Inspect the target GameObject/component/resource before issuing the mutation.
 - Prefer Unity APIs and bridge tools over manual YAML edits.
@@ -17,8 +18,9 @@ Adapted from audited MIT-licensed Unity MCP and unity-cli prior art.
 - Use `Undo.RecordObject`, `Undo.RegisterCreatedObjectUndo`, or the bridge's equivalent undo-aware operation for editor mutations.
 - Mark changed scene objects dirty through Unity APIs when needed.
 - Save scenes only when the task explicitly asks for persistent scene changes.
-- Do not mutate generated hierarchy by editing scene YAML; `DetectiveRoomBootstrap` is the source of generated room truth.
-- Keep generated object names stable unless the task explicitly changes the user-facing object model.
+- Do not mutate scene hierarchy by editing scene YAML.
+- Keep tested object names stable unless the task explicitly updates the object
+  model and matching tests/docs.
 
 ## Prefab And Asset Changes
 

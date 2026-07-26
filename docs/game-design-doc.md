@@ -1,35 +1,43 @@
 # Game Design Document
 
-## Concept
+This file is a starter that must be completed before substantial feature work.
+Do not infer game rules from the neutral sample scene.
 
-`One-Room 2.5D Detective Prototype` is a small investigation scene for learning Unity fundamentals. The player explores a single generated detective room, inspects physical evidence, and completes the objective after recording the essential clues.
+## Product
 
-## Player Experience
+- Name: `UNSET`
+- Genre: `UNSET`
+- Target player: `UNSET`
+- Target platform: `UNSET`
+- Session length: `UNSET`
 
-- The room should feel readable at a glance from an orthographic 2.5D camera.
-- The player should understand that floor clicks move the detective and object clicks inspect clues.
-- Evidence feedback should be immediate through the inspection panel, evidence log, and objective text.
-- Dialogue should add tone without blocking the core evidence loop.
+## Player Fantasy
+
+`Describe what the player is and what they should feel.`
 
 ## Core Loop
 
-1. Move around the room.
-2. Notice prompts on hover.
-3. Inspect clues or talk through dialogue.
-4. Record required evidence.
-5. Complete the room objective.
+1. `Primary player action`
+2. `System response`
+3. `Progress or decision`
+4. `Repeat, escalate, or conclude`
 
-## Current Content
+## First Vertical Slice
 
-- Required clues: `Broken Glass`, `Ledger`, `Locked Door`.
-- Optional dialogue: `Radio Dispatcher`.
-- Player avatar: `Detective`.
-- Generated root: `__DetectiveRoomGenerated`.
+- Entry state: `UNSET`
+- Required mechanics: `UNSET`
+- Success condition: `UNSET`
+- Failure or retry behavior: `UNSET`
+- Out of scope: `UNSET`
 
-## Non-Goals For This Prototype
+## Controls And Feedback
 
-- Inventory systems.
-- Save/load.
-- Procedural case generation.
-- External assets.
-- Networked or cloud-backed gameplay.
+- Input: `UNSET`
+- Camera: `UNSET`
+- UI feedback: `UNSET`
+- Audio feedback: `UNSET`
+
+## Content Conventions
+
+List stable scene names, object names, gameplay IDs, and asset conventions only
+after they are deliberately chosen.

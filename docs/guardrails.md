@@ -12,12 +12,13 @@
 
 - Unity version drift can break APIs. The pinned editor is `6000.5.4f1`.
 - Test runs may fail if Unity licensing is not warmed up.
-- `DetectiveRoomBootstrap` runs in edit mode; opening the scene may generate hierarchy state in memory.
-- Generated object names are used by tests and agents, so renaming them is a behavior-affecting change.
+- `StarterBootstrap` creates `__StarterReady` only in Play Mode.
+- Scene/object names referenced by tests and agents are contracts; rename them
+  together through Unity-safe operations.
 
 ## Agent Review Checklist
 
-- Did the change preserve gameplay unless behavior changes were requested?
+- Did the change preserve runtime behavior unless changes were requested?
 - Did it keep required package dependencies minimal?
 - Did it avoid scene YAML edits?
 - Did it preserve `.meta` files for `Assets/` content?
