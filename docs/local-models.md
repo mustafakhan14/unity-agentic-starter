@@ -1,46 +1,55 @@
 # Local Models
 
-Codex is the primary implementation agent. A local model is an optional,
-offline second-pass reviewer for Unity API risk; it is not the implementation
-authority. Unity compile, tests, MCP/editor state, and local package code remain
-the source of truth.
+Codex is the primary implementation agent. Local models are optional, offline
+second-pass reviewers for Unity API risk; they are not implementation
+authorities. Unity compile, tests, MCP/editor state, and local package code
+remain the source of truth.
 
 ## 80/20 Recommendation
 
-Do not download another model just to satisfy the workflow. First use a capable
-coder model that is already installed, for example:
+Do not download another model just to satisfy the workflow. Start with Codex and
+deterministic Unity validation. Add the local reviewers below only when they are
+already installed or their review value justifies the disk and download cost.
 
-```bash
-UNITY_REVIEW_MODEL=qwen2.5-coder:14b scripts/unity-model-reviewer.sh --smoke
-```
+## Unity Specialist
 
-Run `scripts/unity-model-reviewer.sh --check` before a normal review. The script
-fails fast rather than implicitly downloading its configured model.
-
-Treat a Unity-tuned model as an evaluation candidate, not a required dependency.
-The current candidate is
-`parashm/Qwen2.5-Coder-7B-Instruct-Unity-Q6_K-GGUF:Q6_K`. Pull it explicitly only
-after deciding the local review benefit is worth the disk and download cost:
+The default specialist is
+`parashm/Qwen2.5-Coder-7B-Instruct-Unity-Q6_K-GGUF:Q6_K`:
 
 ```bash
 ollama pull hf.co/parashm/Qwen2.5-Coder-7B-Instruct-Unity-Q6_K-GGUF:Q6_K
-```
-
-Then smoke-test it:
-
-```bash
+scripts/unity-model-reviewer.sh --check
 scripts/unity-model-reviewer.sh --smoke
 ```
 
-Recommended review command after Unity C# or package changes:
+Run it after Unity C# or package changes:
 
 ```bash
 git diff -- Assets/Scripts Assets/Tests Packages ProjectSettings | scripts/unity-model-reviewer.sh
 ```
 
-An installed general coder model is sufficient for advisory review unless a
-repo-specific evaluation shows that the Unity-tuned candidate catches more real
-issues without adding excessive false positives.
+The Unity-tuned 7B model is a fast API skeptic. Its output can still contain
+false positives or understate cross-cutting runtime/editor failures.
+
+## Deep Reviewer
+
+When `qwen3.6:latest` is installed, use it for high-risk changes, ambiguous
+specialist findings, runtime/editor assembly boundaries, package changes, or
+release checkpoints:
+
+```bash
+scripts/unity-model-reviewer.sh --deep --check
+git diff -- Assets/Scripts Assets/Tests Packages ProjectSettings | scripts/unity-model-reviewer.sh --deep
+```
+
+The deep reviewer is slower and not Unity-fine-tuned. It complements the
+specialist and does not replace deterministic Unity validation.
+
+To use a different installed model without changing repository defaults:
+
+```bash
+UNITY_REVIEW_MODEL=qwen2.5-coder:14b scripts/unity-model-reviewer.sh --smoke
+```
 
 ## Role In This Repo
 
@@ -62,10 +71,9 @@ Do not ask it to:
 
 ## Larger Candidate
 
-`wrayy/Qwenity3.6-27B-msv2` is a later evaluation candidate when local hardware
-and serving are proven. It should not block normal work because it is materially
-heavier and less convenient than either an already-installed coder model or the
-Q6_K GGUF candidate.
+`wrayy/Qwenity3.6-27B-msv2` is a later evaluation candidate when local
+hardware and serving are proven. It should not block normal work without a
+repo-specific evaluation showing a meaningful gain.
 
 ## Repo-Specific Fine-Tuning Policy
 
@@ -77,8 +85,15 @@ Do not start a repo-specific fine-tune until this project has:
 - MCP screenshot or console evidence for scene tasks
 - a repeatable evaluator script that compares reviewer output against expected findings
 
-Until then, the high-leverage path is Codex plus deterministic verification,
-with an installed local coder model used only as a cheap second opinion.
+## Current 80/20 Model Policy
+
+1. Codex remains the main planner and implementation agent.
+2. Use the Unity-tuned 7B reviewer as an optional fast specialist.
+3. Add `--deep` for risky, cross-cutting, or disputed changes.
+4. Resolve model findings with compile, EditMode, PlayMode, console, MCP state,
+   and screenshots where relevant.
+5. Do not download a larger Unity model until an evaluation set shows a likely
+   gain.
 
 ## Source Notes
 

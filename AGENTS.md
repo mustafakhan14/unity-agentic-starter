@@ -37,6 +37,9 @@ development. Customize project context before adding game-specific behavior.
   scene. Until customized, use `Assets/Scenes/StarterScene.unity`.
 - For C# or package changes, run the local Unity-tuned reviewer when available:
   `git diff -- Assets Packages ProjectSettings | scripts/unity-model-reviewer.sh`.
+- For high-risk, cross-cutting, or disputed Unity changes, follow with:
+  `git diff -- Assets Packages ProjectSettings |`
+  `scripts/unity-model-reviewer.sh --deep`.
 - For MCP work, verify hierarchy and console access and capture a scene/game view
   when the selected bridge supports it.
 - Run `tests/agent_setup/validate-agent-setup.sh` after changing repository

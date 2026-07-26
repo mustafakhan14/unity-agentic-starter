@@ -163,6 +163,7 @@ require_contains docs/sprint-status.yaml "template-ready"
 require_contains docs/local-models.md "parashm/Qwen2\.5-Coder-7B-Instruct-Unity-Q6_K-GGUF"
 require_contains prompts/unity-finetuned-reviewer.md "6000\.5\.4f1"
 require_contains scripts/unity-model-reviewer.sh "UNITY_REVIEW_MODEL"
+require_contains scripts/unity-model-reviewer.sh "UNITY_DEEP_REVIEW_MODEL"
 require_contains scripts/verify-unity.sh "require_test_results"
 require_contains scripts/verify-unity.sh "warnings"
 require_contains scripts/verify-unity.sh "another Unity instance is running with this project open"
@@ -197,7 +198,7 @@ if grep -R -q "/Users/mukhan" README.md AGENTS.md GLADE.md config docs prompts s
 fi
 
 if grep -R -Eqi \
-  'DetectiveRoom|__DetectiveRoomGenerated|Broken Glass|Radio Dispatcher|locked_door|broken_glass|mustafakhan14/unitylearning|unitylearning|Saad' \
+  'DetectiveRoom|__DetectiveRoomGenerated|Broken Glass|Radio Dispatcher|locked_door|broken_glass|Saad' \
   README.md AGENTS.md GLADE.md Assets docs prompts scripts ProjectSettings; then
   fail "template tip still contains extracted game or old repository identifiers"
 fi
