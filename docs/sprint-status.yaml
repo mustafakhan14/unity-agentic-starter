@@ -2,4 +2,8 @@ project: unity-agentic-starter
 active_story: null
 status: template-ready
 updated: 2026-07-25
-stories: []
+stories:
+  - id: 001-verifier-evidence
+    title: Trust Fresh Unity Verification Evidence
+    status: done
+    completed: 2026-07-25

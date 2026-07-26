@@ -41,7 +41,8 @@ Split the story when a task touches runtime code, scene generation, package depe
 - Acceptance criteria are checked off in the story.
 - Unity compile passes.
 - EditMode and PlayMode tests pass.
-- Result XML exists in `Logs/TestResults/`.
+- Fresh result XML from the current run exists in `Logs/TestResults/` and its
+  top-level counts are internally consistent.
 - No console compile errors are present.
 - Any model-reviewer finding is either fixed or explicitly rejected with reason.
 - MCP smoke is run for editor/scene tasks once the bridge is available.

@@ -64,7 +64,9 @@ required_files=(
   scripts/official-unity-mcp-smoke.mjs
   scripts/unity-model-reviewer.sh
   scripts/lib/bridge-policy.mjs
+  scripts/lib/unity-test-results.mjs
   tests/agent_setup/bridge-policy.test.mjs
+  tests/agent_setup/verify-unity.test.mjs
   scripts/verify-unity.sh
 )
 
@@ -89,7 +91,10 @@ require_executable scripts/bridge-status.mjs
 node --check scripts/official-unity-mcp-smoke.mjs
 node --check scripts/bridge-status.mjs
 node --check scripts/lib/bridge-policy.mjs
-node --test tests/agent_setup/bridge-policy.test.mjs
+node --check scripts/lib/unity-test-results.mjs
+node --test \
+  tests/agent_setup/bridge-policy.test.mjs \
+  tests/agent_setup/verify-unity.test.mjs
 
 for generated_dir in Library Temp Obj Logs Build Builds UserSettings; do
   git check-ignore -q --no-index "${generated_dir}/.agent-setup-probe" ||
@@ -165,7 +170,11 @@ require_contains prompts/unity-finetuned-reviewer.md "6000\.5\.4f1"
 require_contains scripts/unity-model-reviewer.sh "UNITY_REVIEW_MODEL"
 require_contains scripts/unity-model-reviewer.sh "UNITY_DEEP_REVIEW_MODEL"
 require_contains scripts/verify-unity.sh "require_test_results"
-require_contains scripts/verify-unity.sh "warnings"
+require_contains scripts/verify-unity.sh "unity-test-results\.mjs"
+require_contains scripts/verify-unity.sh "UNITY_VERIFY_ARTIFACT_ROOT"
+require_contains scripts/verify-unity.sh "EDITMODE_RESULTS"
+require_contains scripts/lib/unity-test-results.mjs "warnings"
+require_contains scripts/lib/unity-test-results.mjs "categorized"
 require_contains scripts/verify-unity.sh "another Unity instance is running with this project open"
 require_contains scripts/mcp-smoke-check.sh "get_scene_hierarchy"
 require_contains scripts/mcp-smoke-check.sh "get_unity_console_logs"

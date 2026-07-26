@@ -22,7 +22,8 @@ Repository: https://github.com/mustafakhan14/unity-agentic-starter
 - Capability-routed hybrid MCP with GladeKit as the typed-tool baseline.
 - Official Unity MCP as a guarded opt-in for native capture, targeting, Play Mode, and custom tools.
 - A versioned provider registry, bridge doctor/router, and promotion gate for future bridges.
-- Batchmode compile, EditMode, PlayMode, MCP, and static setup validators.
+- Batchmode compile, EditMode, PlayMode, MCP, and static setup validators, with
+  fresh-result enforcement for Unity test evidence.
 - Optional Unity-tuned local model review.
 
 ## First Customization

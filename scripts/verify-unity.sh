@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+HARNESS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROJECT_ROOT="$HARNESS_ROOT"
 UNITY_VERSION="${UNITY_VERSION:-6000.5.4f1}"
 UNITY_BIN="${UNITY_BIN:-/Applications/Unity/Hub/Editor/${UNITY_VERSION}/Unity.app/Contents/MacOS/Unity}"
-LOG_DIR="${PROJECT_ROOT}/Logs/Verification"
-RESULTS_DIR="${PROJECT_ROOT}/Logs/TestResults"
+ARTIFACT_ROOT="${UNITY_VERIFY_ARTIFACT_ROOT:-${PROJECT_ROOT}/Logs}"
+LOG_DIR="${ARTIFACT_ROOT}/Verification"
+RESULTS_DIR="${ARTIFACT_ROOT}/TestResults"
+RESULT_READER="${HARNESS_ROOT}/scripts/lib/unity-test-results.mjs"
 UNITY_TIMEOUT_SECONDS="${UNITY_TIMEOUT_SECONDS:-600}"
+UNITY_POLL_INTERVAL_SECONDS="${UNITY_POLL_INTERVAL_SECONDS:-2}"
 
 mkdir -p "$LOG_DIR" "$RESULTS_DIR"
 
@@ -53,7 +57,7 @@ run_unity() {
       exit 124
     fi
 
-    sleep 2
+    sleep "$UNITY_POLL_INTERVAL_SECONDS"
   done
 
   set +e
@@ -109,37 +113,18 @@ require_test_results() {
     exit 72
   fi
 
-  node -e '
-    const fs = require("fs");
-    const [name, file] = process.argv.slice(1);
-    const xml = fs.readFileSync(file, "utf8");
-    const run = xml.match(/<test-run\b[^>]*>/);
-    if (!run) {
-      console.error(`Unity ${name} results are missing <test-run>: ${file}`);
-      process.exit(72);
-    }
-
-    const attrs = Object.fromEntries([...run[0].matchAll(/\s([A-Za-z-]+)="([^"]*)"/g)].map((m) => [m[1], m[2]]));
-    const total = Number(attrs.total || 0);
-    const failed = Number(attrs.failed || 0);
-    const warnings = Number(attrs.warnings || 0);
-    const inconclusive = Number(attrs.inconclusive || 0);
-    const skipped = Number(attrs.skipped || 0);
-    const result = attrs.result || "Unknown";
-
-    console.log(`${name}: result=${result} total=${total} passed=${attrs.passed || 0} failed=${failed} warnings=${warnings} inconclusive=${inconclusive} skipped=${skipped}`);
-
-    if (result !== "Passed" || total <= 0 || failed !== 0 || warnings !== 0 || inconclusive !== 0 || skipped !== 0) {
-      console.error(`Unity ${name} tests did not fully pass: ${file}`);
-      process.exit(1);
-    }
-  ' "$name" "$result_file"
+  node "$RESULT_READER" "$name" "$result_file"
 }
 
+EDITMODE_RESULTS="${RESULTS_DIR}/editmode-results.xml"
+PLAYMODE_RESULTS="${RESULTS_DIR}/playmode-results.xml"
+
 run_unity compile -quit
-run_unity editmode-tests -runTests -testPlatform EditMode -testResults "${RESULTS_DIR}/editmode-results.xml"
-require_test_results EditMode "${RESULTS_DIR}/editmode-results.xml"
-run_unity playmode-tests -runTests -testPlatform PlayMode -testResults "${RESULTS_DIR}/playmode-results.xml"
-require_test_results PlayMode "${RESULTS_DIR}/playmode-results.xml"
+: > "$EDITMODE_RESULTS"
+run_unity editmode-tests -runTests -testPlatform EditMode -testResults "$EDITMODE_RESULTS"
+require_test_results EditMode "$EDITMODE_RESULTS"
+: > "$PLAYMODE_RESULTS"
+run_unity playmode-tests -runTests -testPlatform PlayMode -testResults "$PLAYMODE_RESULTS"
+require_test_results PlayMode "$PLAYMODE_RESULTS"
 
 echo "Unity verification passed."
