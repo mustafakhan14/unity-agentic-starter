@@ -35,11 +35,18 @@ For runtime or scene changes, also manually verify:
 4. Confirm expected visual and interaction feedback.
 5. Confirm the Console has no new errors.
 
-## MCP Smoke Test
+## Hybrid MCP Check
 
-After GladeKit MCP is configured, verify:
+Select the route before tool use:
+
+```bash
+scripts/bridge-status.mjs --recommend hierarchy_inspection
+```
+
+After the selected bridge is configured, verify:
 
 - Read scene hierarchy.
 - Confirm `StarterBootstrap` and `__StarterReady` in the starter baseline.
 - Read console logs.
-- Capture through the bridge when supported, or use a manual Editor screenshot for visual changes.
+- Capture through the selected bridge when supported, or use a manual Editor screenshot for visual changes.
+- For mutations, confirm one bridge owned the complete operation and any second bridge stayed read-only.

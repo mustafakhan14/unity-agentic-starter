@@ -21,13 +21,16 @@ require_file() {
 require_contains() {
   local path="$1"
   local pattern="$2"
-  if ! grep -Eq "$pattern" "$PROJECT_ROOT/$path"; then
+  if ! grep -Eq -- "$pattern" "$PROJECT_ROOT/$path"; then
     echo "Required pattern not found in $path: $pattern" >&2
     exit 1
   fi
 }
 
 require_file "GLADE.md"
+require_file "config/unity-bridge-registry.json"
+require_file "docs/hybrid-bridge-strategy.md"
+require_file "scripts/bridge-status.mjs"
 require_file ".mcp.example.json"
 require_file "docs/mcp-operating-loop.md"
 require_file "docs/unity-agent-bridge.md"
@@ -37,9 +40,13 @@ require_file "scripts/official-unity-mcp-smoke.mjs"
 
 node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" "$PROJECT_ROOT/.mcp.example.json"
 node --check "$PROJECT_ROOT/scripts/official-unity-mcp-smoke.mjs"
+node --check "$PROJECT_ROOT/scripts/bridge-status.mjs"
+node "$PROJECT_ROOT/scripts/bridge-status.mjs" --static --json >/dev/null
 require_contains ".mcp.example.json" '"command"[[:space:]]*:[[:space:]]*"uvx"'
 require_contains ".mcp.example.json" '"gladekit-mcp"'
 require_contains "GLADE.md" "__StarterReady"
+require_contains "config/unity-bridge-registry.json" '"singleMutationOwner"[[:space:]]*:[[:space:]]*true'
+require_contains "config/unity-bridge-registry.json" '"Unity_AssetGeneration_"'
 require_contains "docs/unity-mcp-bakeoff.md" "Keep GladeKit MCP as the default bridge"
 require_contains "scripts/official-unity-mcp-smoke.mjs" 'startsWith\("Unity_AssetGeneration_"\)'
 

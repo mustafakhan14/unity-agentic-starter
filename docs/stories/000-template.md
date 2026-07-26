@@ -28,6 +28,7 @@ State the player-facing or agent-infrastructure outcome.
 
 - [ ] `scripts/verify-unity.sh`
 - [ ] Unity-tuned reviewer, if Unity C# or packages changed
+- [ ] Bridge capability route and mutation owner, if MCP mutated Editor state
 - [ ] MCP smoke or screenshot, if scene/editor state changed
 
 ## Reviewer Notes

@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "policyVersion": "1.0.0",
+  "defaultProvider": "gladekit",
+  "safety": {
+    "singleMutationOwner": true,
+    "allowReadOnlyCrossCheck": true,
+    "forbiddenToolPrefixes": [
+      "Unity_AssetGeneration_"
+    ],
+    "neverAutoAcceptTerms": true,
+    "neverAutoEnablePaidFeatures": true
+  },
+  "providers": {
+    "gladekit": {
+      "displayName": "GladeKit MCP",
+      "kind": "mcp",
+      "requiredByStarter": true,
+      "optIn": false,
+      "detection": {
+        "manifestPackage": "com.gladekit.mcp-bridge",
+        "clientCommand": "uvx",
+        "healthUrl": "http://localhost:8765/api/health"
+      },
+      "capabilities": [
+        "project_context",
+        "hierarchy_inspection",
+        "component_inspection",
+        "script_search",
+        "console_access",
+        "asset_operations",
+        "scene_mutation",
+        "undo_mutation",
+        "domain_reload_recovery"
+      ]
+    },
+    "unity_official": {
+      "displayName": "Official Unity MCP",
+      "kind": "mcp",
+      "requiredByStarter": false,
+      "optIn": true,
+      "detection": {
+        "manifestPackage": "com.unity.ai.assistant",
+        "relayEnvironmentVariable": "UNITY_MCP_RELAY",
+        "readinessEnvironmentVariable": "UNITY_MCP_READY",
+        "relayPathFromHome": ".unity/relay/relay_mac_arm64.app/Contents/MacOS/relay_mac_arm64"
+      },
+      "capabilities": [
+        "hierarchy_inspection",
+        "component_inspection",
+        "console_access",
+        "scene_mutation",
+        "undo_mutation",
+        "screenshot_capture",
+        "exact_editor_targeting",
+        "play_mode_control",
+        "custom_mcp_tools",
+        "domain_reload_recovery"
+      ]
+    },
+    "filesystem": {
+      "displayName": "Repository Filesystem",
+      "kind": "local_fallback",
+      "requiredByStarter": true,
+      "optIn": false,
+      "capabilities": [
+        "project_context",
+        "script_search"
+      ]
+    },
+    "manual_editor": {
+      "displayName": "Manual Unity Editor",
+      "kind": "manual_fallback",
+      "requiredByStarter": true,
+      "optIn": false,
+      "capabilities": [
+        "hierarchy_inspection",
+        "component_inspection",
+        "console_access",
+        "screenshot_capture",
+        "exact_editor_targeting",
+        "play_mode_control"
+      ]
+    }
+  },
+  "routes": {
+    "project_context": {
+      "mode": "read",
+      "providers": [
+        "gladekit",
+        "filesystem"
+      ]
+    },
+    "hierarchy_inspection": {
+      "mode": "read",
+      "providers": [
+        "gladekit",
+        "unity_official",
+        "manual_editor"
+      ],
+      "verifyWith": [
+        "unity_official"
+      ]
+    },
+    "component_inspection": {
+      "mode": "read",
+      "providers": [
+        "gladekit",
+        "unity_official",
+        "manual_editor"
+      ]
+    },
+    "script_search": {
+      "mode": "read",
+      "providers": [
+        "gladekit",
+        "filesystem"
+      ]
+    },
+    "console_access": {
+      "mode": "read",
+      "providers": [
+        "gladekit",
+        "unity_official",
+        "manual_editor"
+      ],
+      "verifyWith": [
+        "unity_official"
+      ]
+    },
+    "asset_operations": {
+      "mode": "mutation",
+      "providers": [
+        "gladekit"
+      ]
+    },
+    "scene_mutation": {
+      "mode": "mutation",
+      "providers": [
+        "gladekit",
+        "unity_official"
+      ]
+    },
+    "undo_mutation": {
+      "mode": "mutation",
+      "providers": [
+        "gladekit",
+        "unity_official"
+      ]
+    },
+    "screenshot_capture": {
+      "mode": "read",
+      "providers": [
+        "unity_official",
+        "manual_editor"
+      ]
+    },
+    "exact_editor_targeting": {
+      "mode": "read",
+      "providers": [
+        "unity_official",
+        "manual_editor"
+      ]
+    },
+    "play_mode_control": {
+      "mode": "mutation",
+      "providers": [
+        "unity_official",
+        "manual_editor"
+      ]
+    },
+    "custom_mcp_tools": {
+      "mode": "mutation",
+      "providers": [
+        "unity_official"
+      ]
+    },
+    "domain_reload_recovery": {
+      "mode": "read",
+      "providers": [
+        "gladekit",
+        "unity_official"
+      ]
+    }
+  },
+  "promotionPolicy": {
+    "minimumReadSamples": 50,
+    "minimumUndoMutationSamples": 10,
+    "requireCompileRecovery": true,
+    "requirePlayModeRecovery": true,
+    "requireAccountAndCostAudit": true,
+    "requireHumanApprovalForDefaultChange": true
+  }
+}

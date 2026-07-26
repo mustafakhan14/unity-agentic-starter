@@ -11,5 +11,6 @@ Use this checklist before marking a story done.
 - PlayMode tests pass.
 - `Logs/TestResults/editmode-results.xml` and `Logs/TestResults/playmode-results.xml` were written.
 - Unity-tuned local reviewer was run for Unity C# or package changes, or the story explains why it was skipped.
+- The capability route and single mutation owner were recorded for MCP Editor work.
 - MCP smoke was run for scene/editor work, or the story explains why it was skipped.
 - Remaining risks are documented in the story.

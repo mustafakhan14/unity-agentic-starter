@@ -1,0 +1,15 @@
+# Personal Codex configuration example. Do not commit a populated copy.
+
+[mcp_servers.gladekit_mcp]
+command = "uvx"
+args = ["gladekit-mcp"]
+enabled = true
+startup_timeout_sec = 120
+
+# Enable only after the project deliberately installs com.unity.ai.assistant,
+# the user accepts the MCP disclaimer, and the exact client is approved.
+[mcp_servers.unity_mcp]
+command = "/Users/you/.unity/relay/relay_mac_arm64.app/Contents/MacOS/relay_mac_arm64"
+args = ["--mcp", "--project-path", "/absolute/path/to/unity-project"]
+enabled = false
+startup_timeout_sec = 120

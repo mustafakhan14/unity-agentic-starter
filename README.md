@@ -19,8 +19,9 @@ Repository: https://github.com/mustafakhan14/unity-agentic-starter
 - `AGENTS.md` and `GLADE.md` project context.
 - Guardrails for scene, prefab, package, and Editor mutations.
 - An 80/20 story workflow, checklists, prompts, and project-local agent skills.
-- GladeKit MCP as the default local Editor bridge.
-- Official Unity MCP as a guarded, disabled-by-default opt-in alternative.
+- Capability-routed hybrid MCP with GladeKit as the typed-tool baseline.
+- Official Unity MCP as a guarded opt-in for native capture, targeting, Play Mode, and custom tools.
+- A versioned provider registry, bridge doctor/router, and promotion gate for future bridges.
 - Batchmode compile, EditMode, PlayMode, MCP, and static setup validators.
 - Optional Unity-tuned local model review.
 
@@ -35,6 +36,7 @@ and create the first story from `docs/stories/000-template.md`.
 
 ```bash
 tests/agent_setup/validate-agent-setup.sh
+scripts/bridge-status.mjs --static --recommend hierarchy_inspection
 scripts/mcp-smoke-check.sh --static
 scripts/verify-unity.sh
 ```

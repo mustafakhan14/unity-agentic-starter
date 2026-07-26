@@ -1,44 +1,44 @@
 ---
 name: unity-mcp-operating-loop
-description: Operate Unity through MCP safely. Use when using GladeKit or another Unity MCP bridge to inspect, mutate, test, or screenshot the project. Do not use when Unity Editor is unavailable and local file inspection is enough.
+description: Operate Unity through capability-routed MCP safely. Use when inspecting, mutating, testing, or capturing Editor state through one or more bridges.
 ---
 
 # Unity MCP Operating Loop
 
-Adapted from MIT-licensed GladeKit MCP, CoplayDev Unity MCP, CoderGamester MCP Unity, and akiojin unity-cli workflow material.
+Adapted from MIT-licensed GladeKit MCP, CoplayDev Unity MCP, CoderGamester MCP
+Unity, and akiojin unity-cli workflow material.
 
 ## Use When
 
-- The task uses a Unity MCP bridge.
-- The task requires scene hierarchy, console logs, screenshots, or editor state.
-- The task involves multi-step Unity editor operations.
-
-## Do Not Use When
-
-- A local static code read fully answers the request.
-- The task only updates markdown.
+- A task uses Unity Editor state, MCP tools, screenshots, or Play Mode.
+- A capability could be served by more than one configured bridge.
+- A second bridge would provide useful read-only verification.
 
 ## Preferred Flow
 
-1. Confirm bridge health and active project path.
-2. Read `GLADE.md` context through the bridge if available.
-3. Check editor state: compiling, play mode, domain reload.
-4. Read hierarchy/resources before mutating.
-5. Apply the smallest tool call or batch of independent tool calls.
-6. Wait for compile/domain reload after script changes.
-7. Read console errors and warnings.
-8. Capture screenshot evidence for visual changes when the bridge supports it; otherwise use a manual Editor screenshot.
-9. Run tests or `scripts/verify-unity.sh` for behavior changes.
+1. Name the capability from `config/unity-bridge-registry.json`.
+2. Run `scripts/bridge-status.mjs --recommend <capability>`.
+3. Verify the selected bridge is live and targets this exact project.
+4. Read `GLADE.md`, editor state, hierarchy, and console before mutation.
+5. Assign one mutation owner and use the smallest typed operation available.
+6. Keep that owner through Undo, save, compile, reload, and console checks.
+7. Use another bridge only for a read-only cross-check after completion.
+8. Capture visual evidence and run relevant Unity tests.
 
-## GladeKit-Specific Notes
+## Failure Boundary
 
-- Use `get_relevant_tools` for specialized tools instead of guessing.
-- Use `search_project_scripts` when script names are unclear.
-- Do not set asset import `licenseAcknowledged` without explicit user approval.
-- Cloud intelligence is optional; never require `GLADEKIT_API_KEY`.
+- Before mutation, an unavailable provider can fall back to the next route.
+- During mutation, never switch providers blindly. Inspect, Undo or restore,
+  then restart with one explicit owner.
+- A cross-bridge disagreement is evidence to investigate, not permission for
+  automatic repair.
+- Cloud intelligence is optional. Never require `GLADEKIT_API_KEY`, Unity Cloud,
+  trials, paid features, or asset-generation tools.
 
 ## References
 
+- `config/unity-bridge-registry.json`
+- `docs/hybrid-bridge-strategy.md`
 - `docs/mcp-operating-loop.md`
 - `docs/unity-agent-bridge.md`
 - `GLADE.md`

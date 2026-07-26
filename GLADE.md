@@ -21,8 +21,9 @@
 - Unity primitives and built-in 3D physics
 - Legacy uGUI when a story requires UI
 - Unity Test Framework
-- GladeKit MCP as the default Editor bridge
-- Official Unity MCP only as an explicitly enabled secondary bridge
+- Capability-routed MCP using `config/unity-bridge-registry.json`
+- GladeKit as the broad typed-tool baseline
+- Official Unity MCP as an opt-in provider for native capabilities it wins
 
 Add packages only when a concrete story requires them. Record architectural
 choices in `docs/game-architecture.md`.

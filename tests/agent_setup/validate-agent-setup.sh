@@ -20,7 +20,7 @@ require_executable() {
 require_contains() {
   local path="$1"
   local pattern="$2"
-  grep -Eq "$pattern" "$path" || fail "missing pattern in $path: $pattern"
+  grep -Eq -- "$pattern" "$path" || fail "missing pattern in $path: $pattern"
 }
 
 required_files=(
@@ -30,6 +30,8 @@ required_files=(
   README.md
   THIRD_PARTY_NOTICES.md
   .mcp.example.json
+  config/mcp-hybrid.example.toml
+  config/unity-bridge-registry.json
   Assets/Scenes/StarterScene.unity
   Assets/Scenes/StarterScene.unity.meta
   Assets/Scripts/Starter.Runtime.asmdef
@@ -44,6 +46,7 @@ required_files=(
   docs/custom-mcp-extension-policy.md
   docs/game-architecture.md
   docs/game-design-doc.md
+  docs/hybrid-bridge-strategy.md
   docs/mcp-operating-loop.md
   docs/mcp-smoke.md
   docs/prior-art.md
@@ -55,10 +58,13 @@ required_files=(
   docs/unity-editor-mutation-policy.md
   docs/unity-mcp-bakeoff.md
   prompts/unity-finetuned-reviewer.md
+  scripts/bridge-status.mjs
   scripts/clone-prior-art.sh
   scripts/mcp-smoke-check.sh
   scripts/official-unity-mcp-smoke.mjs
   scripts/unity-model-reviewer.sh
+  scripts/lib/bridge-policy.mjs
+  tests/agent_setup/bridge-policy.test.mjs
   scripts/verify-unity.sh
 )
 
@@ -79,7 +85,11 @@ for script in "${shell_scripts[@]}"; do
 done
 
 require_executable scripts/official-unity-mcp-smoke.mjs
+require_executable scripts/bridge-status.mjs
 node --check scripts/official-unity-mcp-smoke.mjs
+node --check scripts/bridge-status.mjs
+node --check scripts/lib/bridge-policy.mjs
+node --test tests/agent_setup/bridge-policy.test.mjs
 
 for generated_dir in Library Temp Obj Logs Build Builds UserSettings; do
   git check-ignore -q --no-index "${generated_dir}/.agent-setup-probe" ||
@@ -92,6 +102,7 @@ done < <(find Assets -mindepth 1 ! -name '*.meta' -print0)
 
 node -e "for (const f of process.argv.slice(1)) JSON.parse(require('fs').readFileSync(f, 'utf8'));" \
   .mcp.example.json \
+  config/unity-bridge-registry.json \
   Packages/manifest.json \
   Packages/packages-lock.json \
   Assets/Scripts/Starter.Runtime.asmdef \
@@ -115,8 +126,11 @@ done
 
 require_contains README.md "github\.com/mustafakhan14/unity-agentic-starter"
 require_contains README.md "template-customization-checklist\.md"
+require_contains README.md "Capability-routed hybrid MCP"
 require_contains README.md "THIRD_PARTY_NOTICES\.md"
 require_contains AGENTS.md "Assets/Scenes/StarterScene\.unity"
+require_contains AGENTS.md "one mutation owner"
+require_contains AGENTS.md "bridge-status\.mjs"
 require_contains AGENTS.md "Undo\.RecordObject"
 require_contains AGENTS.md "domain reload"
 require_contains AGENTS.md "port conflicts"
@@ -124,11 +138,14 @@ require_contains AGENTS.md "main thread"
 require_contains AGENTS.md "tool schemas"
 require_contains GLADE.md "__StarterReady"
 require_contains GLADE.md "UNSET"
+require_contains GLADE.md "unity-bridge-registry\.json"
 require_contains Packages/manifest.json "com\.gladekit\.mcp-bridge"
 require_contains Packages/manifest.json "57f7e1930726079e3c44475877a514758ea2545f"
 require_contains ProjectSettings/ProjectVersion.txt "6000\.5\.4f1"
 require_contains ProjectSettings/EditorBuildSettings.asset "Assets/Scenes/StarterScene\.unity"
-require_contains docs/bridge-selection.md "Default bridge: GladeKit MCP"
+require_contains docs/bridge-selection.md "Bridge choice is capability-based"
+require_contains docs/hybrid-bridge-strategy.md "Exactly one bridge owns a mutation sequence"
+require_contains docs/hybrid-bridge-strategy.md "Candidate Shadow Mode"
 require_contains docs/template-customization-checklist.md "PlayerSettings\.productName"
 require_contains docs/unity-editor-mutation-policy.md "Undo\.RecordObject"
 require_contains docs/unity-editor-mutation-policy.md "licenseAcknowledged"
@@ -152,6 +169,10 @@ require_contains scripts/verify-unity.sh "another Unity instance is running with
 require_contains scripts/mcp-smoke-check.sh "get_scene_hierarchy"
 require_contains scripts/mcp-smoke-check.sh "get_unity_console_logs"
 require_contains scripts/mcp-smoke-check.sh "wrong project"
+require_contains scripts/bridge-status.mjs "--recommend"
+require_contains scripts/lib/bridge-policy.mjs "chooseProvider"
+require_contains config/unity-bridge-registry.json "singleMutationOwner"
+require_contains config/unity-bridge-registry.json "Unity_AssetGeneration_"
 require_contains scripts/official-unity-mcp-smoke.mjs "Assets/Scenes/StarterScene\.unity"
 require_contains scripts/official-unity-mcp-smoke.mjs 'startsWith\("Unity_AssetGeneration_"\)'
 require_contains THIRD_PARTY_NOTICES.md "GladeKit MCP"
@@ -171,7 +192,7 @@ for repo in \
   require_contains docs/bridge-selection.md "$repo"
 done
 
-if grep -R -q "/Users/mukhan" README.md AGENTS.md GLADE.md docs prompts scripts .mcp.example.json; then
+if grep -R -q "/Users/mukhan" README.md AGENTS.md GLADE.md config docs prompts scripts .mcp.example.json; then
   fail "shareable guidance contains a machine-specific absolute path"
 fi
 
@@ -193,6 +214,7 @@ if git ls-files | grep -Eq '^(Library|Temp|Obj|Logs|Build|Builds|UserSettings)/'
   fail "generated or personal Unity state is tracked"
 fi
 
+node scripts/bridge-status.mjs --static --recommend hierarchy_inspection --json >/dev/null
 scripts/mcp-smoke-check.sh --static
 
 echo "Agent setup validation passed."

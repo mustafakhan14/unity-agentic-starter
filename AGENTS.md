@@ -73,18 +73,19 @@ development. Customize project context before adding game-specific behavior.
 - Check for port conflicts before diagnosing bridge code or tool schemas.
 - Follow `docs/unity-editor-mutation-policy.md` before mutating Unity state.
 
-## Bridge Selection
+## Hybrid Bridge Routing
 
-- Default to GladeKit MCP for this project.
-- Use `docs/bridge-selection.md` before changing bridge strategy.
-- Treat official Unity MCP as an opt-in secondary bridge; read
-  `docs/unity-mcp-bakeoff.md` before installing or enabling it.
-- Never call official `Unity_AssetGeneration_*` tools without separate explicit
-  approval for the exact generation, terms, and possible cost.
-- Keep `.mcp.example.json` as an example only; do not commit personal MCP client
-  config or secrets.
-- Run `scripts/mcp-smoke-check.sh --static` for config readiness and
-  `scripts/mcp-smoke-check.sh` for live bridge readiness.
+- Read `config/unity-bridge-registry.json` before choosing an Editor bridge.
+- Run `scripts/bridge-status.mjs --recommend <capability>` when bridge choice is not obvious.
+- Use GladeKit for broad typed Unity operations and durable `GLADE.md` context.
+- Use official Unity MCP when it is deliberately installed and the route prefers native capture, exact Editor targeting, Play Mode control, or project-local custom tools.
+- Assign exactly one mutation owner for each operation sequence. A second bridge may verify read-only state only after the owner finishes.
+- Never fail over during a partial mutation. Inspect, Undo or restore, then restart with an explicitly selected owner.
+- Read `docs/hybrid-bridge-strategy.md` and `docs/bridge-selection.md` before adding, promoting, or changing a provider.
+- Treat official Unity MCP as opt-in; read `docs/unity-mcp-bakeoff.md` before installing or enabling it.
+- Never call official `Unity_AssetGeneration_*` tools without separate explicit approval for the exact generation, terms, and possible cost.
+- Keep `.mcp.example.json` and `config/mcp-hybrid.example.toml` as examples only; do not commit personal MCP client config or secrets.
+- Run `scripts/mcp-smoke-check.sh --static` for config readiness and `scripts/mcp-smoke-check.sh` for live GladeKit readiness.
 
 ## Custom MCP Extensions
 

@@ -1,60 +1,70 @@
 # Unity Agent Bridge Selection
 
-Use this matrix before adding or changing a Unity editor bridge.
+Bridge choice is capability-based. The versioned source of truth is
+`config/unity-bridge-registry.json`; `docs/hybrid-bridge-strategy.md` explains
+the operating and promotion policy.
 
-## Default
+## Current Baseline
 
-Use GladeKit MCP first for this repo.
+- GladeKit is required by the starter and handles broad typed Unity operations,
+  `GLADE.md` context, hierarchy, components, scripts, console, and ordinary
+  scene or asset work.
+- Official Unity MCP is opt-in and becomes primary for native capture, exact
+  Editor targeting, Play Mode control, and project-local typed custom tools.
+- Filesystem and manual Editor routes remain explicit local fallbacks.
+- Exactly one bridge owns each mutation sequence. A second bridge can only
+  cross-check read-only state after completion.
 
-Why:
-
-- It reads `GLADE.md` from the Unity project root.
-- It exposes broad Unity-aware tools, resources, console access, and project script search; screenshot availability depends on the installed bridge/client version.
-- It keeps the bridge as a package dependency instead of vendoring a bridge implementation into this learning repo.
-- It can run fully local for core features.
-
-The controlled 2026-07-25 bakeoff is recorded in
-`docs/unity-mcp-bakeoff.md`. The official bridge did not win the overall
-repo-default decision.
-
-Install path:
-
-```text
-https://github.com/Glade-tool/glade-mcp.git?path=/unity-bridge
-```
-
-MCP server command:
+Inspect the current machine and select a route with:
 
 ```bash
-uvx gladekit-mcp
+scripts/bridge-status.mjs --static
+scripts/bridge-status.mjs --recommend hierarchy_inspection
+scripts/bridge-status.mjs --recommend screenshot_capture
 ```
 
-## Fallbacks
+## Provider Matrix
 
-| Option | Use when | Avoid when |
+| Provider | Best use | Main limitation |
 | --- | --- | --- |
-| `Glade-tool/glade-mcp` | Default Unity MCP bridge, `GLADE.md` context, script search, broad tools | You need built-in screenshot capture, want to avoid installing `uv`, or the package URL fails |
-| Official Unity MCP in `com.unity.ai.assistant` | You need native camera/multi-angle capture, exact project/PID targeting, signed per-client approval, Play Mode control, or project-local typed custom MCP tools | You do not want a large pre-release AI package, account/disclaimer friction, entitlement warnings, or a default surface dominated by `Unity_RunCommand` |
-| `CoplayDev/unity-mcp` | You need mature Unity MCP operator docs, resource-first workflows, broad test/harness ideas | You do not want a Python/FastMCP bridge |
-| `CoderGamester/mcp-unity` | You want a compact Node/WebSocket bridge model and simple tool/resource contracts | You need the broader GladeKit tool surface |
-| `akiojin/unity-cli` | MCP is unavailable but a typed CLI workflow, dry-run calls, or command schemas would help | You need MCP-native integration |
-| `IvanMurzak/Unity-MCP` | Generated skills, custom tools/resources/prompts, runtime-in-game patterns, and server/plugin separation | Do not copy source files until a clean checkout completes |
+| GladeKit MCP | Default typed Unity operations, project context, script search, hierarchy, components, console | No native capture in pinned `0.7.16`; fixed local bridge endpoint |
+| Official Unity MCP | Native capture, project/PID targeting, Play Mode, signed approvals, project-local custom tools | Pre-release Assistant package, narrower default tools, account warnings, broad `Unity_RunCommand` escape hatch |
+| CoplayDev Unity MCP | Candidate for mature resource-first operation and harness patterns | Requires a separate Python/FastMCP stack and a new bakeoff |
+| CoderGamester MCP Unity | Candidate for a compact Node/WebSocket bridge | Narrower surface than the current baseline |
+| IvanMurzak Unity-MCP | Candidate for generated skills, broad tools, and runtime/custom extension patterns | Requires a clean install, license audit, and controlled bakeoff |
+| akiojin unity-cli | Typed CLI fallback when MCP is unavailable | Not an MCP-native Editor connection |
 
-## Decision Rules
+## Tracked Implementations
 
-- Do not vendor a full bridge implementation into this repo without a specific feature gap that package installation cannot solve.
-- Prefer package/CLI installation plus repo-specific docs, prompts, tests, and skills.
-- Keep all bridge credentials and personal client config out of git.
-- If adding a bridge package, update `Packages/manifest.json`, `Packages/packages-lock.json`, `docs/unity-agent-bridge.md`, and this file.
-- If a bridge changes ports or tool names, update `docs/mcp-operating-loop.md` and `scripts/mcp-smoke-check.sh`.
-- If adding custom project MCP tools/resources/prompts, follow `docs/custom-mcp-extension-policy.md`.
+- `Glade-tool/glade-mcp`
+- `CoplayDev/unity-mcp`
+- `CoderGamester/mcp-unity`
+- `IvanMurzak/Unity-MCP`
+- `akiojin/unity-cli`
 
-## Current Status
+These are candidates or evidence sources, not automatically enabled providers.
 
-- Default bridge: GladeKit MCP.
-- Optional secondary bridge: official Unity MCP; install only for a specific
-  capability gap and validate with `scripts/official-unity-mcp-smoke.mjs`.
-- Bakeoff result: `docs/unity-mcp-bakeoff.md`.
-- Example MCP config: `.mcp.example.json`.
-- Local smoke readiness script: `scripts/mcp-smoke-check.sh`.
-- Full Unity verification script: `scripts/verify-unity.sh`.
+## Admission Rules
+
+1. Add a candidate to the registry in read-only shadow mode.
+2. Pin source and version; record license, transport, ports, machine state,
+   accounts, terms, cloud calls, package size, and rollback.
+3. Run the sample and recovery thresholds in
+   `docs/hybrid-bridge-strategy.md`.
+4. Require Undo-aware mutation evidence before mutation eligibility.
+5. Change a primary route or default provider only through human review.
+
+Package presence never proves readiness. Verify live health, exact project,
+console access, domain reload, and provider-specific smoke behavior.
+
+## Configuration
+
+- GladeKit client example: `.mcp.example.json`
+- Hybrid Codex example: `config/mcp-hybrid.example.toml`
+- GladeKit smoke: `scripts/mcp-smoke-check.sh`
+- Official smoke: `scripts/official-unity-mcp-smoke.mjs`
+- Controlled comparison: `docs/unity-mcp-bakeoff.md`
+
+Do not commit credentials or personal client configuration. Do not call
+`Unity_AssetGeneration_*` tools without separate explicit approval for the
+exact operation, terms, and possible cost.

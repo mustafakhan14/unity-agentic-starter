@@ -81,6 +81,15 @@ Use `docs/mcp-operating-loop.md` for the resource-first workflow adapted from th
 
 When using GladeKit asset import tools, do not set `licenseAcknowledged: true` until the user explicitly approves the exact asset and license candidate.
 
+## Hybrid Routing
+
+GladeKit is the baseline provider, not a universal hard-coded winner. Use
+`scripts/bridge-status.mjs --recommend <capability>` and
+`docs/hybrid-bridge-strategy.md` to route work. Official Unity MCP can remain
+configured but disabled until its package, relay, approval, and smoke checks are
+present for a project.
+
+
 ## Optional Official Unity MCP
 
 The official Unity MCP bridge is an opt-in secondary bridge, not the default.
@@ -106,6 +115,10 @@ The opt-in smoke test is:
 ```bash
 node scripts/official-unity-mcp-smoke.mjs
 ```
+
+After that smoke passes, use `UNITY_MCP_READY=1` with the route command for
+that verified session. Package and relay presence alone never make the official
+provider available.
 
 The harness refuses `Unity_AssetGeneration_*` calls and writes evidence under
 ignored `Logs/`.
